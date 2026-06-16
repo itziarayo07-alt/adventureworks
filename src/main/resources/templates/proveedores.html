@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Proveedores y productos</title>
+    <meta charset="UTF-8">
+
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f6f9;
+        color: #1f2937;
+    }
+
+    header {
+        background: linear-gradient(135deg, #111827, #2563eb);
+        color: white;
+        padding: 35px 60px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 34px;
+    }
+
+    header p {
+        margin-top: 8px;
+        color: #dbeafe;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 12px;
+        margin-top: 15px;
+    }
+
+    input {
+        flex: 1;
+        padding: 13px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 13px 25px;
+        border-radius: 10px;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    .error {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background: #f9fafb;
+        border-left: 5px solid #2563eb;
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .stat-card p {
+        margin: 8px 0 0;
+        font-size: 22px;
+        font-weight: bold;
+        color: #111827;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    thead {
+        background: #111827;
+        color: white;
+    }
+
+    th, td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    tbody tr:hover {
+        background: #f3f4f6;
+    }
+
+    .badge {
+        background: #dbeafe;
+        color: #1d4ed8;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-weight: bold;
+    }
+
+    .footer {
+        text-align: center;
+        color: #6b7280;
+        margin: 30px;
+        font-size: 14px;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+    <h1>AdventureWorks Supplier Center</h1>
+    <p>Elaborado por el equipo G: Mariana e Itzia</p>
+</header>
+
+<div class="container">
+
+
+<div class="card">
+    <h2>Buscar proveedor</h2>
+    <p>Selecciona un proveedor de la lista o escribe su nombre.</p>
+    <p>Nota:Se muestran los 15 proveedores mas comunes.</p>
+
+    <form action="/buscar" method="post" class="search-box">
+
+        <input list="listaProveedores"
+               type="text"
+               name="proveedor"
+               placeholder="Selecciona o escribe un proveedor"
+               required>
+
+        <datalist id="listaProveedores">
+            <option value="Advanced Bicycles">
+            <option value="Crowley Sport">
+            <option value="Gardner Touring Cycles">
+            <option value="International Trek Center">
+            <option value="Litware, Inc.">
+            <option value="Professional Athletic Consultants">
+            <option value="Sporting Goods and Bicycle Shop">
+            <option value="Superior Bicycles">
+            <option value="Training Systems">
+            <option value="Trikes, Inc.">
+            <option value="Victory Bikes">
+            <option value="Westside Plaza">
+        </datalist>
+
+        <button type="submit">Buscar</button>
+
+    </form>
+
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+</div>
+
+<div class="card" th:if="${productos}">
+    <h2>
+        Resultados para:
+        <span th:text="${proveedorBuscado}"></span>
+    </h2>
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <h3>Precio promedio</h3>
+            <p>$<span th:text="${precioPromedio}"></span></p>
+        </div>
+
+        <div class="stat-card" th:if="${productoMayorTiempo != null}">
+            <h3>Mayor tiempo de entrega</h3>
+            <p>
+                <span th:text="${productoMayorTiempo.tiempoPromedioEntrega}"></span>
+                días
+            </p>
+        </div>
+
+        <div class="stat-card" th:if="${productoMayorTiempo != null}">
+            <h3>Producto con mayor entrega</h3>
+            <p th:text="${productoMayorTiempo.producto}"></p>
+        </div>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Proveedor</th>
+                <th>Producto</th>
+                <th>Precio estándar</th>
+                <th>Tiempo promedio de entrega</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="p : ${productos}">
+                <td>
+                    <span class="badge" th:text="${p.proveedor}"></span>
+                </td>
+
+                <td th:text="${p.producto}"></td>
+
+                <td>
+                    $<span th:text="${p.precioEstandar}"></span>
+                </td>
+
+                <td>
+                    <span th:text="${p.tiempoPromedioEntrega}"></span> días
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<div class="footer">
+    UNIVERSIDAD VERACRUZANA -
+     PARADIGMAS DE PROGRAMACION II
+</div>
+
+</body>
+</html>
