@@ -1,0 +1,3 @@
+Proveedor,Producto,PrecioEstandar,TiempoPromedioEntrega
+Crowley Sport,LL Mountain Pedal,17.9776,15
+Crowley Sport,ML Mountain Pedal,27.5680,15

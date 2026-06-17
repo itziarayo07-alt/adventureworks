@@ -69,7 +69,7 @@ public class ProveedorService {
     }
 
     private void guardarReporte(List<ProductoProveedor> productos) throws Exception {
-        FileWriter writer = new FileWriter("reporte_proveedores.txt");
+        FileWriter writer = new FileWriter("reporte_proveedores.txt",false);
 
         writer.write("Proveedor,Producto,PrecioEstandar,TiempoPromedioEntrega\n");
 
